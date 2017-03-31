@@ -1,7 +1,6 @@
 package com.coolweather.android.service;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
-import com.bumptech.glide.util.Util;
 import com.coolweather.android.gson.Weather;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
@@ -34,8 +32,17 @@ public class AutoUpdateService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         updateWeather();
         updateBingPic();
+        SharedPreferences pref;
+        int time;
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        String timeInterval = pref.getString("update_freq", null);
+        if (timeInterval != null) {
+            time = Integer.parseInt(timeInterval);
+        } else {
+            time = 8;
+        }
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 8 * 60 * 60 * 1000;   //8小时的毫秒数
+        int anHour = time * 60 * 60 * 1000;   //time小时的毫秒数
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AutoUpdateService.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);

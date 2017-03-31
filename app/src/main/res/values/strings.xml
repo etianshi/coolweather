@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">酷欧天气</string>
+    <string name="update_mode">手动更新</string>
 </resources>
